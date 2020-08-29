@@ -1,0 +1,83 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+vector<string> change(string str) {
+	vector<string> arr;
+	for (int i = 0; i < str.size() - 1; ++i) {
+		if ((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= 'a' && str[i] <= 'z')) {
+			if ((str[i + 1] >= 'A' && str[i + 1] <= 'Z') || (str[i + 1] >= 'a' && str[i + 1] <= 'z')) {
+				string tmp;
+				if (str[i] >= 'A' && str[i] <= 'Z') {
+					tmp.push_back(str[i]);
+				}
+				else {
+					tmp.push_back(str[i] - 32);
+				}
+
+				if (str[i + 1] >= 'A' && str[i + 1] <= 'Z') {
+					tmp.push_back(str[i + 1]);
+				}
+				else {
+					tmp.push_back(str[i+1] - 32);
+				}
+
+				arr.push_back(tmp);
+
+			}
+		}
+	}
+	return arr;
+}
+
+int solution(string str1, string str2) {
+	int answer = 0;
+	vector<string> arr1;
+	vector<string> arr2;
+
+	arr1 = change(str1);
+	arr2 = change(str2);
+
+
+
+	sort(arr1.begin(), arr1.end());
+	sort(arr2.begin(), arr2.end());
+
+	vector<string> hap;
+	hap.resize(arr1.size() + arr2.size());
+	auto itr = set_union(arr1.begin(), arr1.end(), arr2.begin(), arr2.end(), hap.begin());
+	
+
+	int cnt_hap = 0;
+
+	for (int i = 0; i < hap.size(); ++i) {
+		if (hap[i] != "") {
+			cnt_hap++;
+		}		
+	}
+
+
+	vector<string> gyo;
+	gyo.resize(arr1.size() + arr2.size());
+	auto itr2 = set_intersection(arr1.begin(), arr1.end(), arr2.begin(), arr2.end(), gyo.begin());
+	int cnt_gyo = 0;
+	for (int i = 0; i < hap.size(); ++i) {
+		if (gyo[i] != "") {
+			cnt_gyo++;
+		}
+	}
+
+	if (cnt_gyo == 0 && cnt_hap == 0) {
+		answer = 65536;
+	}
+	else {
+		answer = (int)(((double)cnt_gyo / (double)cnt_hap) * 65536);
+	}
+
+
+
+
+
+	return answer;
+}
