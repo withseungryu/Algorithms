@@ -1,0 +1,76 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int cnt = 0;
+vector<pair<int, string>> check(int cacheSize, vector<pair<int,string>> arr, string a) {
+	
+
+	
+	sort(arr.begin(), arr.end());
+	reverse(arr.begin(), arr.end());
+	for (int j = 0; j < arr.size(); ++j) {
+		arr[j].first += 1;
+	}
+
+	bool ok = false;
+	int idx;
+	for (int i = 0; i < arr.size(); ++i) {
+		if (arr[i].second == a) {
+			ok = true;
+			idx = i;
+            break;
+		}
+	}
+
+	if (ok) {
+		cnt += 1;
+			
+		arr[idx].first = 0;
+	}
+	else {
+		cnt += 5;
+		if (cacheSize > arr.size()) {
+			arr.push_back(make_pair(0, a));
+		}
+		else {
+			
+
+			arr[0].first = 0;
+			arr[0].second = a;
+		}
+	}
+		
+	
+	return arr;
+}
+
+int solution(int cacheSize, vector<string> cities) {
+	int answer = 0;
+	if (cacheSize == 0) {
+		answer = cities.size() * 5;
+		return answer;
+	}
+    
+    for (int i = 0; i < cities.size(); i++) {
+		for (int j = 0; j < cities[i].size(); ++j) {
+			if (cities[i][j] >= 97 && cities[i][j] <= 122) {
+				cities[i][j] = cities[i][j] - 32;
+			}
+		}
+	}
+
+	vector<pair<int, string>> arr;
+
+	for (int i = 0; i < cities.size(); ++i) {
+		arr = check(cacheSize, arr, cities[i]);
+
+	}
+
+	answer = cnt;
+	
+
+
+	return answer;
+}
