@@ -1,0 +1,91 @@
+#include <string>
+#include <vector>
+#include <queue>
+#include <algorithm>
+
+using namespace std;
+
+vector<pair<int,int>> block(vector<vector<char>> arr, int m, int n) {
+	vector<pair<int, int>> tmp;
+
+	for (int i = 0; i < m-1; i++) {
+		for (int j = 0; j < n-1; ++j) {
+			int eo = arr[i][j];
+			if (eo!=0 && eo == arr[i][j + 1] && eo == arr[i + 1][j] && eo == arr[i + 1][j + 1]) {
+				tmp.push_back(make_pair(i, j));
+			}
+		}
+	}
+
+	return tmp;
+}
+
+vector<vector<char>> flush(vector<vector<char>> arr, int m, int n) {
+	vector<vector<char>> tmp;
+	tmp = vector<vector<char>>(m, vector<char>(n, 0));
+	for (int i = 0; i < n; ++i) {
+		queue<char> q;
+		for (int j = m - 1; j >= 0; --j) {
+			if (arr[j][i] != 0) {
+				q.push(arr[j][i]);
+			}
+		}
+		for (int j = m - 1; j >= 0; --j) {
+			if (!q.empty()) {
+				tmp[j][i] = q.front();
+				q.pop();
+			}
+			else {
+				tmp[j][i] = 0;
+			}
+		
+
+		}
+	}
+
+	return tmp;
+}
+
+
+int solution(int m, int n, vector<string> board) {
+    int answer = 0;
+    vector<vector<char>> arr;
+	arr = vector<vector<char>>(m, vector<char>(n, 0));
+
+
+	for (int i = 0; i < m; ++i) {
+		for (int j = 0; j < n; ++j) {
+			arr[i][j] = board[i][j];
+		}
+	}
+
+	while (1) {
+		vector<pair<int, int>> idxs = block(arr, m, n);
+		if (idxs.size() == 0) {
+			break;
+		}
+		for (int i = 0; i < idxs.size(); ++i) {
+			int idx = idxs[i].first; int idy = idxs[i].second;
+			if (arr[idx][idy] != 0) {
+				answer++;
+				arr[idx][idy] = 0;
+			}
+			if (arr[idx][idy + 1] != 0) {
+				answer++;
+				arr[idx][idy + 1] = 0;
+			}
+			if (arr[idx + 1][idy] != 0) {
+				answer++;
+				arr[idx + 1][idy] = 0;
+			}
+			if (arr[idx + 1][idy + 1] != 0) {
+				answer++;
+				arr[idx + 1][idy + 1] = 0;
+			}
+
+		}
+
+		arr = flush(arr, m, n);
+	}
+    return answer;
+}
